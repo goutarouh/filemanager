@@ -6,14 +6,14 @@ import (
 )
 
 // CreateSearchInputText は検索の箱を作成する。
-func CreateSearchInputText(searchInputTextChannel chan string) *tview.InputField {
+func CreateSearchInputText(searchWordChannel chan string) *tview.InputField {
 	searchInputField := tview.NewInputField()
 	searchInputField.SetTitle("search")
 	searchInputField.SetBorder(true)
 	searchInputField.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
 		case tcell.KeyEnter:
-			searchInputTextChannel <- searchInputField.GetText()
+			searchWordChannel <- searchInputField.GetText()
 			return nil
 		}
 		return event

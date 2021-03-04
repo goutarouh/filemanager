@@ -2,8 +2,8 @@ package component
 
 import (
 	"filemanager/data"
+	"filemanager/log"
 	"os"
-	"strings"
 
 	"github.com/rivo/tview"
 )
@@ -36,31 +36,37 @@ func CreateTable() *FileTable {
 }
 
 // EventReceiver はイベントを取得します。
-func (fileTable *FileTable) EventReceiver(searchInputTextChannel chan string) {
+func (fileTable *FileTable) EventReceiver(app *tview.Application, searchWordChannel chan string) {
 	for {
 		select {
-		case word := <-searchInputTextChannel:
+		case word := <-searchWordChannel:
 			fileTable.Table.Clear()
-			fileTable.ShowFiles(word)
+
+			app.QueueUpdateDraw(func() {
+				fileTable.ShowFiles(word)
+			})
 		}
 	}
 }
 
 // ShowFiles はテーブルに一覧を表示します。
 func (fileTable *FileTable) ShowFiles(word string) {
-	cols, rows := 1, len(fileTable.files)-1
+
+	filteredList := data.FilterFile(fileTable.files, word)
+
+	for _, file := range filteredList {
+		log.Log.Println("  ", file.Name())
+	}
+
+	cols, rows := 1, len(filteredList)
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 
-			fileName := fileTable.files[r].Name()
+			fileName := filteredList[r].Name()
+			cell := tview.NewTableCell(fileName)
 
-			if !strings.Contains(fileName, word) {
-				continue
-			}
+			fileTable.Table.SetCell(r, c, cell)
 
-			fileTable.Table.SetCell(r, c,
-				tview.NewTableCell(fileName).
-					SetAlign(tview.AlignCenter))
 		}
 	}
 }
