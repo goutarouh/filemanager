@@ -119,7 +119,7 @@ func CreateTable(eventChannel model.EventChannel) *FileTable {
 			return nil
 		}
 
-		if event.Rune() == 'd' {
+		if event.Rune() == 'r' {
 			tableContentsInfo := &model.TableContentsInfo{
 				Word:            "",
 				Path:            initDir,

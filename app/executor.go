@@ -47,10 +47,6 @@ func ExecuteApp() {
 	go preview.EventReceiver(app, eventChannel)
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Rune() == 's' {
-			app.SetFocus(searchInputField)
-			return nil
-		}
 		if event.Key() == constant.KeyUp || event.Key() == constant.KeyDown {
 			app.SetFocus(table.Table)
 			return event
