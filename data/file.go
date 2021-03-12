@@ -6,10 +6,9 @@ import (
 	"strings"
 )
 
-// ReadAllFile は全てのファイルをリストで返します。
-func ReadAllFile() []os.FileInfo {
-	dir := "C:/Users/gouta/Documents/go-develop/github.com/goutarouh/filemanager"
-	files, err := ioutil.ReadDir(dir)
+// ReadAllFileName get all dirs and files at the path you provide to this as the arg.
+func ReadAllFileName(path string) []os.FileInfo {
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		files = make([]os.FileInfo, 0)
 	}
@@ -17,7 +16,7 @@ func ReadAllFile() []os.FileInfo {
 	return files
 }
 
-// FilterFile はファイル名の絞り込みを行います。
+// FilterFile filter "fileList" by "word" arg.
 func FilterFile(fileList []os.FileInfo, word string) []os.FileInfo {
 	filteredList := make([]os.FileInfo, 0, len(fileList))
 	for _, file := range fileList {
@@ -26,4 +25,14 @@ func FilterFile(fileList []os.FileInfo, word string) []os.FileInfo {
 		}
 	}
 	return filteredList
+}
+
+// ReadFile reads contents of file.
+// if err, it returns default string.
+func ReadFile(fileName string) string {
+	contents, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return "sorry, I can't show you the file contents."
+	}
+	return string(contents)
 }
