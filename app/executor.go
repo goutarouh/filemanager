@@ -31,7 +31,9 @@ func ExecuteApp() {
 
 	grid := tview.NewGrid().SetSize(10, 2, 0, 0)
 
-	searchInputField := component.CreateSearchInputText(eventChannel)
+	app := tview.NewApplication()
+
+	searchInputField := component.CreateSearchInputText(app, eventChannel)
 	table := component.CreateTable(eventChannel)
 	description := component.CreateDescription()
 	preview := component.CreatePreview()
@@ -41,15 +43,23 @@ func ExecuteApp() {
 	grid.AddItem(description, 0, 1, 2, 2, 0, 0, false)
 	grid.AddItem(preview.TextView, 2, 1, 10, 2, 0, 0, false)
 
-	app := tview.NewApplication()
-
 	go table.EventReceiver(app, eventChannel)
 	go preview.EventReceiver(app, eventChannel)
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == constant.KeyUp || event.Key() == constant.KeyDown {
 			app.SetFocus(table.Table)
-			return event
+		}
+
+		// So, We need to make another way to update input text, when input-area is already focused.
+		if event.Rune() == 's' {
+			_, ok := app.GetFocus().(*tview.InputField)
+			if ok {
+				return event
+			} else {
+				app.SetFocus(searchInputField)
+				return nil
+			}
 		}
 		return event
 	})

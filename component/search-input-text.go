@@ -8,7 +8,7 @@ import (
 )
 
 // CreateSearchInputText は検索の箱を作成する。
-func CreateSearchInputText(eventChannel model.EventChannel) *tview.InputField {
+func CreateSearchInputText(app *tview.Application, eventChannel model.EventChannel) *tview.InputField {
 	searchInputField := tview.NewInputField()
 	searchInputField.SetLabel("search: ")
 	searchInputField.SetBorder(true)
